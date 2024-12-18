@@ -30,9 +30,7 @@ class _HomePageState extends State<HomePage> {
   final _descriptionController = TextEditingController();
   final _imageUrlController = TextEditingController();
   final _priceController = TextEditingController();
-  final _brandController = TextEditingController();
-  final _flavorController = TextEditingController();
-  final _ingredientsController = TextEditingController();
+
 
 
   String filterType = 'Все';

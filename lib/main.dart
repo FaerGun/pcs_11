@@ -48,11 +48,13 @@ class _MyHomePageState extends State<MyHomePage> {
   bool _isLoggedIn = false;
   final List<Sweet> orderHistory = [];
 
+
   static const List<Widget> _widgetTitles = [
     Text('Главная'),
     Text('Избранное'),
     Text('Корзина'),
     Text('Профиль'),
+    Text('Чат'),
   ];
 
   late List<Widget> _widgetOptions;
@@ -157,12 +159,16 @@ class _MyHomePageState extends State<MyHomePage> {
             icon: Icon(Icons.person),
             label: 'Профиль',
           ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.chat),
+            label: 'Чат',
+          ),
         ],
         currentIndex: _selectedIndex,
         selectedItemColor: const Color.fromARGB(255, 42, 140, 30),
         unselectedItemColor: const Color.fromARGB(255, 126, 165, 99),
         backgroundColor: const Color.fromARGB(255, 38, 94, 39),
-        onTap: _onItemTapped,
+        onTap: (_onItemTapped),
       ),
     );
   }
