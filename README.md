@@ -25,8 +25,12 @@
 ![img_4.png](img_4.png)
 авторизация на firebase данные
 ![img_5.png](img_5.png)
-# Практика 14
+# Практика 14 - 15
 Шведов Павел
 ![img_9.png](img_9.png)
 ![img_10.png](img_10.png)
 ![img_11.png](img_11.png)
+# Практика 16
+шведов павел
+отправил на модерацию rustore
+![image](https://github.com/user-attachments/assets/9cbc71a9-203d-4067-adb6-27be57fb4892)
