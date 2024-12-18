@@ -1,26 +1,38 @@
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthService {
-  final SupabaseClient _supabase = Supabase.instance.client;
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
-  Future<AuthResponse> signInWithEmailPassword(
+  // Вход с помощью электронной почты и пароля
+  Future<UserCredential> signInWithEmailPassword(
       String email, String password) async {
-    return await _supabase.auth.signInWithPassword(email:email, password: password);
+    try {
+      return await _firebaseAuth.signInWithEmailAndPassword(
+          email: email, password: password);
+    } catch (e) {
+      rethrow; // Перехватываем и передаем ошибку выше
+    }
   }
 
-  Future<AuthResponse> signUpWithEmailPassword(
+  // Регистрация с помощью электронной почты и пароля
+  Future<UserCredential> signUpWithEmailPassword(
       String email, String password) async {
-    return await _supabase.auth.signUp(email: email, password: password);
+    try {
+      return await _firebaseAuth.createUserWithEmailAndPassword(
+          email: email, password: password);
+    } catch (e) {
+      rethrow; // Перехватываем и передаем ошибку выше
+    }
   }
 
+  // Выход из системы
   Future<void> signOut() async {
-    await _supabase.auth.signOut();
+    await _firebaseAuth.signOut();
   }
 
+  // Получение текущего пользователя (если он аутентифицирован)
   String? getCurrentUserEmail() {
-    final session = _supabase.auth.currentSession;
-    final user = session?.user;
+    final User? user = _firebaseAuth.currentUser;
     return user?.email;
   }
-
 }

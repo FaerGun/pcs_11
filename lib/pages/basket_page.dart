@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../models/note.dart';
 import '../api/api.dart';
 
@@ -23,16 +23,18 @@ class BasketPage extends StatefulWidget {
 class _BasketPageState extends State<BasketPage> {
   final ApiService apiService = ApiService();
   bool _isLoggedIn = false;
+
   @override
   void initState() {
     super.initState();
     _checkAuthStatus();
   }
 
+  // Проверка статуса аутентификации с Firebase
   Future<void> _checkAuthStatus() async {
-    final session = Supabase.instance.client.auth.currentSession;
+    final User? user = FirebaseAuth.instance.currentUser;
     setState(() {
-      _isLoggedIn = session != null;
+      _isLoggedIn = user != null;
     });
   }
 
@@ -112,8 +114,7 @@ class _BasketPageState extends State<BasketPage> {
                     height: 50,
                   ),
                   title: Text(sweet.name),
-                  subtitle: Text(
-                      '${sweet.price} рублей x ${sweet.quantity}'),
+                  subtitle: Text('${sweet.price} рублей x ${sweet.quantity}'),
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -138,8 +139,7 @@ class _BasketPageState extends State<BasketPage> {
               children: [
                 Text(
                   'Общая сумма: $totalPrice рублей',
-                  style: const TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.bold),
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 10),
                 ElevatedButton(
