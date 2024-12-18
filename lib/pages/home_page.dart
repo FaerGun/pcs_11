@@ -81,6 +81,7 @@ class _HomePageState extends State<HomePage> {
       description: _descriptionController.text,
       imageUrl: _imageUrlController.text,
       price: int.tryParse(_priceController.text) ?? 0,
+
       isFavorite: false,
     );
 
@@ -126,7 +127,6 @@ class _HomePageState extends State<HomePage> {
                   keyboardType: TextInputType.number,
                   decoration: const InputDecoration(labelText: 'Цена'),
                 ),
-
 
               ],
             ),
@@ -244,7 +244,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Все для улова от рыболова'),
+        title: const Text('Вкусняшки'),
         actions: [
           IconButton(
             icon: const Icon(Icons.filter_list),
@@ -365,7 +365,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                             IconButton(
                               icon: const Icon(Icons.shopping_cart),
-                              color: const Color.fromARGB(255, 16, 50, 2),
+                              color: Colors.blueGrey,
                               onPressed: () {
                                 widget.onAddToBasket(sweet);
                                 ScaffoldMessenger.of(context).showSnackBar(

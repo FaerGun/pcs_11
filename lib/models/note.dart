@@ -39,6 +39,7 @@ class Sweet {
       'description': description,
       'image_url': imageUrl,
       'price': price,
+
       'is_favorite': isFavorite,
       'quantity': quantity,
     };

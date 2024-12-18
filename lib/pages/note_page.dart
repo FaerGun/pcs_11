@@ -88,6 +88,7 @@ class ProductDetailPage extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             _buildDetailRow('Цена:', '${sweet.price} рублей'),
+
             const SizedBox(height: 20),
             Center(
               child: ElevatedButton.icon(

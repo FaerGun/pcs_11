@@ -1,8 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:pcs_11/pages/profile.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../models/note.dart';
 import '../pages/login_page.dart';
-import '../pages/profile.dart';
 
 class AuthGate extends StatefulWidget {
   const AuthGate({super.key, required this.orderHistory});
@@ -13,31 +13,21 @@ class AuthGate extends StatefulWidget {
 }
 
 class _AuthGateState extends State<AuthGate> {
-  late Stream<User?> _authStateStream;
-
-  @override
-  void initState() {
-    super.initState();
-    // Слушаем изменения состояния аутентификации
-    _authStateStream = FirebaseAuth.instance.authStateChanges();
-  }
-
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<User?>(
-      stream: _authStateStream,
+      stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Scaffold(
-              body: Center(child: CircularProgressIndicator())
+            body: Center(child: CircularProgressIndicator()),
           );
         }
 
-        final user = snapshot.data;
-        if (user != null) {
-          return ProfilePage(); // Переход на профиль, если пользователь аутентифицирован
+        if (snapshot.hasData && snapshot.data != null) {
+          return const ProfilePage();
         } else {
-          return const LoginPage(); // Переход на страницу логина, если пользователь не аутентифицирован
+          return const LoginPage();
         }
       },
     );

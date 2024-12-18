@@ -1,8 +1,9 @@
 import 'package:pcs_11/components/auth_service.dart';
 import 'package:flutter/material.dart';
-import '../models/note.dart';
+import 'chat_list_page.dart';
 import 'edit_profile_page.dart';
 import 'orderhistorypage.dart';
+import 'chat_page.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -13,7 +14,7 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   String _fullName = 'John Lenon';
-  String _phone = '+7 960 456 7890';
+  String _phone = '+7 985 456 7890';
   String _avatarUrl = 'https://via.placeholder.com/150';
 
   final authService = AuthService();
@@ -52,6 +53,7 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     final currentEmail = authService.getCurrentUserEmail();
+    final currentUserUid = authService.getCurrentUserUid();
 
     return Scaffold(
       appBar: AppBar(
@@ -124,6 +126,30 @@ class _ProfilePageState extends State<ProfilePage> {
                 },
                 child: const Text('История заказов'),
               ),
+              if (currentUserUid == "qSVrgQjZaXfxRTRu5ksjmtMX6oH2")
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ChatListPage(sellerUid: "qSVrgQjZaXfxRTRu5ksjmtMX6oH2"),
+                      ),
+                    );
+                  },
+                  child: const Text('Мои чаты'),
+                )
+              else
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ChatPage(sellerUid: "qSVrgQjZaXfxRTRu5ksjmtMX6oH2"),
+                      ),
+                    );
+                  },
+                  child: const Text('Чат с продавцом'),
+                ),
               const SizedBox(height: 30),
               ElevatedButton(
                 onPressed: logout,

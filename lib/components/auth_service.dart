@@ -3,36 +3,40 @@ import 'package:firebase_auth/firebase_auth.dart';
 class AuthService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
-  // Вход с помощью электронной почты и пароля
-  Future<UserCredential> signInWithEmailPassword(
-      String email, String password) async {
+  Future<UserCredential> signInWithEmailPassword(String email,
+      String password) async {
     try {
       return await _firebaseAuth.signInWithEmailAndPassword(
           email: email, password: password);
-    } catch (e) {
-      rethrow; // Перехватываем и передаем ошибку выше
+    } on FirebaseAuthException catch (e) {
+      throw Exception('Ошибка входа: ${e.message}');
     }
   }
 
-  // Регистрация с помощью электронной почты и пароля
-  Future<UserCredential> signUpWithEmailPassword(
-      String email, String password) async {
+  Future<UserCredential> signUpWithEmailPassword(String email,
+      String password) async {
     try {
       return await _firebaseAuth.createUserWithEmailAndPassword(
           email: email, password: password);
-    } catch (e) {
-      rethrow; // Перехватываем и передаем ошибку выше
+    } on FirebaseAuthException catch (e) {
+      throw Exception('Ошибка регистрации: ${e.message}');
     }
   }
 
-  // Выход из системы
   Future<void> signOut() async {
     await _firebaseAuth.signOut();
   }
 
-  // Получение текущего пользователя (если он аутентифицирован)
   String? getCurrentUserEmail() {
     final User? user = _firebaseAuth.currentUser;
     return user?.email;
+  }
+
+  bool isUserLoggedIn() {
+    return _firebaseAuth.currentUser != null;
+  }
+
+  String? getCurrentUserUid() {
+    return FirebaseAuth.instance.currentUser?.uid;
   }
 }

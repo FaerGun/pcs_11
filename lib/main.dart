@@ -1,18 +1,19 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/material.dart';
 import 'package:pcs_11/pages/basket_page.dart';
 import 'package:pcs_11/pages/favourite.dart';
 import 'package:pcs_11/pages/login_page.dart';
 import 'package:pcs_11/pages/profile.dart';
+import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'models/note.dart';
 import 'pages/home_page.dart';
-import 'firebase_options.dart';
+import 'firebase_options.dart'; // Import your generated Firebase configuration
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // Initialize Firebase with platform-specific options
   await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
+    options: DefaultFirebaseOptions.currentPlatform, // Using the generated Firebase options
   );
   runApp(const MyApp());
 }
@@ -24,7 +25,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Все для улова от рыболова',
+      title: 'Вкусняшки',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
         useMaterial3: true,
@@ -48,13 +49,11 @@ class _MyHomePageState extends State<MyHomePage> {
   bool _isLoggedIn = false;
   final List<Sweet> orderHistory = [];
 
-
   static const List<Widget> _widgetTitles = [
     Text('Главная'),
     Text('Избранное'),
     Text('Корзина'),
     Text('Профиль'),
-    Text('Чат'),
   ];
 
   late List<Widget> _widgetOptions;
@@ -74,7 +73,7 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  Future<void> _checkAuthStatus() async {
+  void _checkAuthStatus() {
     final user = FirebaseAuth.instance.currentUser;
     setState(() {
       _isLoggedIn = user != null;
@@ -159,16 +158,12 @@ class _MyHomePageState extends State<MyHomePage> {
             icon: Icon(Icons.person),
             label: 'Профиль',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.chat),
-            label: 'Чат',
-          ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: const Color.fromARGB(255, 42, 140, 30),
-        unselectedItemColor: const Color.fromARGB(255, 126, 165, 99),
-        backgroundColor: const Color.fromARGB(255, 38, 94, 39),
-        onTap: (_onItemTapped),
+        selectedItemColor: const Color.fromARGB(255, 7, 78, 41),
+        unselectedItemColor: const Color.fromARGB(255, 26, 137, 79),
+        backgroundColor: const Color.fromARGB(255, 126, 165, 99),
+        onTap: _onItemTapped,
       ),
     );
   }

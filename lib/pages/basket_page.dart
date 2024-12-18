@@ -30,9 +30,8 @@ class _BasketPageState extends State<BasketPage> {
     _checkAuthStatus();
   }
 
-  // Проверка статуса аутентификации с Firebase
-  Future<void> _checkAuthStatus() async {
-    final User? user = FirebaseAuth.instance.currentUser;
+  void _checkAuthStatus() {
+    final user = FirebaseAuth.instance.currentUser;
     setState(() {
       _isLoggedIn = user != null;
     });
@@ -114,7 +113,8 @@ class _BasketPageState extends State<BasketPage> {
                     height: 50,
                   ),
                   title: Text(sweet.name),
-                  subtitle: Text('${sweet.price} рублей x ${sweet.quantity}'),
+                  subtitle: Text(
+                      '${sweet.price} рублей x ${sweet.quantity}'),
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -139,7 +139,8 @@ class _BasketPageState extends State<BasketPage> {
               children: [
                 Text(
                   'Общая сумма: $totalPrice рублей',
-                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                      fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 10),
                 ElevatedButton(
