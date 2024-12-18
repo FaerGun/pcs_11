@@ -6,7 +6,7 @@ import '../pages/login_page.dart';
 
 class AuthGate extends StatefulWidget {
   const AuthGate({super.key, required this.orderHistory});
-  final List<Gear> orderHistory;
+  final List<Sweet> orderHistory;
 
   @override
   _AuthGateState createState() => _AuthGateState();

@@ -3,17 +3,17 @@ import '../models/note.dart';
 import '../api/api.dart';
 
 class ProductDetailPage extends StatelessWidget {
-  final Gear gear;
+  final Sweet sweet;
   final VoidCallback onDelete;
   final ApiService apiService = ApiService();
 
-  ProductDetailPage({super.key, required this.gear, required this.onDelete});
+  ProductDetailPage({super.key, required this.sweet, required this.onDelete});
 
   final textFont = const TextStyle(fontSize: 18, fontWeight: FontWeight.w500);
 
   Future<void> _deleteProduct(BuildContext context) async {
     try {
-      await apiService.deleteProduct(gear.id);
+      await apiService.deleteProduct(sweet.id);
       onDelete();
       Navigator.pop(context);
     } catch (e) {
@@ -28,7 +28,7 @@ class ProductDetailPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          gear.name,
+          sweet.name,
         ),
       ),
       body: SingleChildScrollView(
@@ -50,7 +50,7 @@ class ProductDetailPage extends StatelessWidget {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(20),
                 child: Image.network(
-                  gear.imageUrl,
+                  sweet.imageUrl,
                   fit: BoxFit.cover,
                   height: MediaQuery.of(context).size.height * 0.4,
                   width: double.infinity,
@@ -79,7 +79,7 @@ class ProductDetailPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      gear.description,
+                      sweet.description,
                       style: textFont,
                     ),
                   ],
@@ -87,10 +87,7 @@ class ProductDetailPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 10),
-            _buildDetailRow('Цена:', '${gear.price} рублей'),
-            _buildDetailRow('Бренд:', gear.brand),
-            _buildDetailRow('Описание:', gear.flavor),
-
+            _buildDetailRow('Цена:', '${sweet.price} рублей'),
             const SizedBox(height: 20),
             Center(
               child: ElevatedButton.icon(

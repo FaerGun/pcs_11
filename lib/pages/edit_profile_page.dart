@@ -43,7 +43,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blue,
+        backgroundColor: const Color.fromARGB(255, 7, 78, 41),
         title: const Text('Редактировать профиль'),
       ),
       body: Padding(

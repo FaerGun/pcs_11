@@ -5,11 +5,11 @@ import '../models/order.dart';
 class ApiService {
   final Dio _dio = Dio(BaseOptions(baseUrl: 'http://localhost:8080'));
 
-  Future<List<Gear>> getProducts() async {
+  Future<List<Sweet>> getProducts() async {
     try {
       final response = await _dio.get('/products');
-      List<Gear> products = (response.data as List)
-          .map((json) => Gear.fromJson(json))
+      List<Sweet> products = (response.data as List)
+          .map((json) => Sweet.fromJson(json))
           .toList();
       return products;
     } catch (e) {
@@ -17,18 +17,18 @@ class ApiService {
     }
   }
 
-  Future<void> createProduct(Gear gear) async {
+  Future<void> createProduct(Sweet sweet) async {
     try {
-      await _dio.post('/products', data: gear.toJson());
+      await _dio.post('/products', data: sweet.toJson());
     } catch (e) {
       throw Exception('Не удалось создать продукт: $e');
     }
   }
 
-  Future<Gear> getProductByID(int id) async {
+  Future<Sweet> getProductByID(int id) async {
     try {
       final response = await _dio.get('/products/$id');
-      return Gear.fromJson(response.data);
+      return Sweet.fromJson(response.data);
     } catch (e) {
       throw Exception('Продукт не найден: $e');
     }
@@ -55,17 +55,17 @@ class ApiService {
     }
   }
 
-  Future<void> createOrder(List<Gear> orderItems, int totalCost) async {
+  Future<void> createOrder(List<Sweet> orderItems, int totalCost) async {
     try {
       final data = {
         "products": orderItems
-            .map((gear) =>
+            .map((sweet) =>
         {
-          "product_id": gear.id,
-          "name": gear.name,
-          "price": gear.price,
-          "quantity": gear.quantity,
-          "image_url": gear.imageUrl,
+          "product_id": sweet.id,
+          "name": sweet.name,
+          "price": sweet.price,
+          "quantity": sweet.quantity,
+          "image_url": sweet.imageUrl,
         })
             .toList(),
         "total_price": totalCost,

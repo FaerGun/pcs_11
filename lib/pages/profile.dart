@@ -13,7 +13,7 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   String _fullName = 'John Lenon';
-  String _phone = '+7 895 564 9000';
+  String _phone = '+7 960 456 7890';
   String _avatarUrl = 'https://via.placeholder.com/150';
 
   final authService = AuthService();

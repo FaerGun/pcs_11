@@ -5,13 +5,13 @@ import '../api/api.dart';
 import 'note_page.dart';
 
 class HomePage extends StatefulWidget {
-  final Set<Gear> favoriteGears;
-  final Function(Gear, bool) onFavoriteChanged;
-  final Function(Gear) onAddToBasket;
+  final Set<Sweet> favoriteSweets;
+  final Function(Sweet, bool) onFavoriteChanged;
+  final Function(Sweet) onAddToBasket;
 
   const HomePage({
     Key? key,
-    required this.favoriteGears,
+    required this.favoriteSweets,
     required this.onFavoriteChanged,
     required this.onAddToBasket,
   }) : super(key: key);
@@ -22,8 +22,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final ApiService apiService = ApiService();
-  List<Gear> gears = [];
-  List<Gear> filteredGears = [];
+  List<Sweet> sweets = [];
+  List<Sweet> filteredSweets = [];
 
   final TextEditingController searchController = TextEditingController();
   final _nameController = TextEditingController();
@@ -32,7 +32,7 @@ class _HomePageState extends State<HomePage> {
   final _priceController = TextEditingController();
   final _brandController = TextEditingController();
   final _flavorController = TextEditingController();
-
+  final _ingredientsController = TextEditingController();
 
 
   String filterType = 'Все';
@@ -48,8 +48,8 @@ class _HomePageState extends State<HomePage> {
     try {
       final products = await apiService.getProducts();
       setState(() {
-        gears = products;
-        filteredGears = List.from(gears);
+        sweets = products;
+        filteredSweets = List.from(sweets);
       });
     } catch (e) {
       print("Ошибка при загрузке продуктов: $e");
@@ -62,35 +62,32 @@ class _HomePageState extends State<HomePage> {
     setState(() {});
   }
 
-  Future<void> _deleteProduct(Gear gear) async {
+  Future<void> _deleteProduct(Sweet sweet) async {
     try {
-      await apiService.deleteProduct(gear.id);
+      await apiService.deleteProduct(sweet.id);
       await fetchProducts();
     } catch (e) {
       print("Ошибка при удалении продукта: $e");
     }
   }
 
-  void _toggleFavorite(Gear gear) {
-    final isFavorite = widget.favoriteGears.contains(gear);
-    widget.onFavoriteChanged(gear, !isFavorite);
+  void _toggleFavorite(Sweet sweet) {
+    final isFavorite = widget.favoriteSweets.contains(sweet);
+    widget.onFavoriteChanged(sweet, !isFavorite);
   }
 
-  Future<void> _addNewGear() async {
-    final newGear = Gear(
+  Future<void> _addNewSweet() async {
+    final newSweet = Sweet(
       id: 0,
       name: _nameController.text,
       description: _descriptionController.text,
       imageUrl: _imageUrlController.text,
       price: int.tryParse(_priceController.text) ?? 0,
-      brand: _brandController.text,
-      flavor: _flavorController.text,
-
       isFavorite: false,
     );
 
     try {
-      await apiService.createProduct(newGear);
+      await apiService.createProduct(newSweet);
       await fetchProducts();
     } catch (e) {
       print("Ошибка при добавлении продукта: $e");
@@ -100,12 +97,10 @@ class _HomePageState extends State<HomePage> {
     _descriptionController.clear();
     _imageUrlController.clear();
     _priceController.clear();
-    _brandController.clear();
-    _flavorController.clear();
 
   }
 
-  void _showAddGearDialog(BuildContext context) {
+  void _showAddSweetDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -133,11 +128,6 @@ class _HomePageState extends State<HomePage> {
                   keyboardType: TextInputType.number,
                   decoration: const InputDecoration(labelText: 'Цена'),
                 ),
-                TextField(
-                  controller: _brandController,
-                  decoration: const InputDecoration(labelText: 'Бренд'),
-                ),
-
 
 
               ],
@@ -152,7 +142,7 @@ class _HomePageState extends State<HomePage> {
             ),
             ElevatedButton(
               onPressed: () async {
-                await _addNewGear();
+                await _addNewSweet();
                 Navigator.of(context).pop();
               },
               child: const Text('Добавить'),
@@ -164,15 +154,15 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _updateFilteredProducts() {
-    List<Gear> tempGears = List.from(gears);
+    List<Sweet> tempSweets = List.from(sweets);
 
     if (filterType == 'Цена') {
-      tempGears.sort((a, b) =>
+      tempSweets.sort((a, b) =>
       isDescending
           ? b.price.compareTo(a.price)
           : a.price.compareTo(b.price));
     } else if (filterType == 'Название') {
-      tempGears.sort((a, b) =>
+      tempSweets.sort((a, b) =>
       isDescending
           ? b.name.toLowerCase().compareTo(a.name.toLowerCase())
           : a.name.toLowerCase().compareTo(b.name.toLowerCase()));
@@ -180,13 +170,13 @@ class _HomePageState extends State<HomePage> {
 
     final query = searchController.text.trim().toLowerCase();
     if (query.isNotEmpty) {
-      tempGears = tempGears
-          .where((gear) => gear.name.toLowerCase().contains(query))
+      tempSweets = tempSweets
+          .where((sweet) => sweet.name.toLowerCase().contains(query))
           .toList();
     }
 
     setState(() {
-      filteredGears = tempGears;
+      filteredSweets = tempSweets;
     });
   }
 
@@ -281,7 +271,7 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           Expanded(
-            child: filteredGears.isEmpty
+            child: filteredSweets.isEmpty
                 ? const Center(
               child: Text(
                 'Нет доступных товаров',
@@ -290,7 +280,7 @@ class _HomePageState extends State<HomePage> {
             )
                 : GridView.builder(
               padding: const EdgeInsets.all(12.0),
-              itemCount: filteredGears.length,
+              itemCount: filteredSweets.length,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 crossAxisSpacing: 10.0,
@@ -298,9 +288,9 @@ class _HomePageState extends State<HomePage> {
                 childAspectRatio: 2 / 3,
               ),
               itemBuilder: (context, index) {
-                final gear = filteredGears[index];
+                final sweet = filteredSweets[index];
                 final isFavorite =
-                widget.favoriteGears.contains(gear);
+                widget.favoriteSweets.contains(sweet);
 
                 return GestureDetector(
                   onTap: () async {
@@ -308,9 +298,9 @@ class _HomePageState extends State<HomePage> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => ProductDetailPage(
-                          gear: gear,
+                          sweet: sweet,
                           onDelete: () async {
-                            await _deleteProduct(gear);
+                            await _deleteProduct(sweet);
                             await fetchProducts();
                           },
                         ),
@@ -332,7 +322,7 @@ class _HomePageState extends State<HomePage> {
                               top: Radius.circular(15),
                             ),
                             child: Image.network(
-                              gear.imageUrl,
+                              sweet.imageUrl,
                               fit: BoxFit.cover,
                               width: double.infinity,
                             ),
@@ -344,14 +334,14 @@ class _HomePageState extends State<HomePage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                gear.name,
+                                sweet.name,
                                 style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 18,
                                 ),
                               ),
                               Text(
-                                '${gear.price} ₽',
+                                '${sweet.price} ₽',
                                 style: TextStyle(
                                   fontSize: 16,
                                   color: Colors.pinkAccent.shade400,
@@ -372,18 +362,18 @@ class _HomePageState extends State<HomePage> {
                                 color: isFavorite ? Colors.red : Colors.grey,
                               ),
                               onPressed: () {
-                                _toggleFavorite(gear);
+                                _toggleFavorite(sweet);
                               },
                             ),
                             IconButton(
                               icon: const Icon(Icons.shopping_cart),
-                              color: Colors.blueGrey,
+                              color: const Color.fromARGB(255, 16, 50, 2),
                               onPressed: () {
-                                widget.onAddToBasket(gear);
+                                widget.onAddToBasket(sweet);
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                     content: Text(
-                                        '${gear.name} добавлен в корзину'),
+                                        '${sweet.name} добавлен в корзину'),
                                     duration: const Duration(seconds: 1),
                                   ),
                                 );
@@ -401,7 +391,7 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _showAddGearDialog(context),
+        onPressed: () => _showAddSweetDialog(context),
         child: const Icon(Icons.add),
       ),
     );

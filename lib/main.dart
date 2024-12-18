@@ -8,7 +8,7 @@ import 'pages/home_page.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 Future<void> main() async {
-  await Supabase.initialize(url: 'https://vrhfozwtxyswupwupppl.supabase.co' , anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZyaGZvend0eHlzd3Vwd3VwcHBsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzI1MzEyNzksImV4cCI6MjA0ODEwNzI3OX0.AKGRL2vGlbSrJEqB9oOVcFSCJnosF72IFbkKl7UvmdU');
+  await Supabase.initialize(url: 'https://jizungpdvuyxvtckfakd.supabase.co' , anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImppenVuZ3BkdnV5eHZ0Y2tmYWtkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzE1NjU0NTksImV4cCI6MjA0NzE0MTQ1OX0.V96NJ_rioSDpf-y6icd8n5oagBPEXDL-hhBw5WvYzFE');
   runApp(const MyApp());
 }
 
@@ -19,9 +19,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Все для улова от рыболова',
+      title: 'Вкусняшки',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
         useMaterial3: true,
       ),
       home: const MyHomePage(),
@@ -38,10 +38,10 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
-  Set<Gear> favoriteGears = <Gear>{};
-  Set<Gear> basketItems = <Gear>{};
+  Set<Sweet> favoriteSweets = <Sweet>{};
+  Set<Sweet> basketItems = <Sweet>{};
   bool _isLoggedIn = false;
-  final List<Gear> orderHistory = [];
+  final List<Sweet> orderHistory = [];
 
   static const List<Widget> _widgetTitles = [
     Text('Главная'),
@@ -78,12 +78,12 @@ class _MyHomePageState extends State<MyHomePage> {
   void _updateWidgetOptions() {
     _widgetOptions = <Widget>[
       HomePage(
-        favoriteGears: favoriteGears,
+        favoriteSweets: favoriteSweets,
         onFavoriteChanged: _onFavoriteChanged,
         onAddToBasket: _addToBasket,
       ),
       FavoritePage(
-        favoriteGears: favoriteGears,
+        favoriteSweets: favoriteSweets,
         onFavoriteChanged: _onFavoriteChanged,
       ),
       BasketPage(
@@ -97,31 +97,31 @@ class _MyHomePageState extends State<MyHomePage> {
     ];
   }
 
-  void _onFavoriteChanged(Gear gear, bool isFavorite) {
+  void _onFavoriteChanged(Sweet sweet, bool isFavorite) {
     setState(() {
       if (isFavorite) {
-        favoriteGears.add(gear);
+        favoriteSweets.add(sweet);
       } else {
-        favoriteGears.remove(gear);
+        favoriteSweets.remove(sweet);
       }
     });
   }
 
-  void _addToBasket(Gear gear) {
+  void _addToBasket(Sweet sweet) {
     setState(() {
-      basketItems.add(gear);
+      basketItems.add(sweet);
     });
   }
 
-  void _addOrderToHistory(List<Gear> purchasedItems) {
+  void _addOrderToHistory(List<Sweet> purchasedItems) {
     setState(() {
       orderHistory.addAll(purchasedItems);
     });
   }
 
-  void _removeFromBasket(Gear gear) {
+  void _removeFromBasket(Sweet sweet) {
     setState(() {
-      basketItems.remove(gear);
+      basketItems.remove(sweet);
     });
   }
 
@@ -155,9 +155,9 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: const Color.fromARGB(255, 32, 100, 156),
-        unselectedItemColor: const Color.fromARGB(255, 32, 100, 156),
-        backgroundColor: Colors.white,
+        selectedItemColor: const Color.fromARGB(255, 42, 140, 30),
+        unselectedItemColor: const Color.fromARGB(255, 126, 165, 99),
+        backgroundColor: const Color.fromARGB(255, 38, 94, 39),
         onTap: _onItemTapped,
       ),
     );

@@ -3,12 +3,12 @@ import '../components/item_note.dart';
 import '../models/note.dart';
 
 class FavoritePage extends StatefulWidget {
-  final Set<Gear> favoriteGears;
-  final Function(Gear, bool) onFavoriteChanged;
+  final Set<Sweet> favoriteSweets;
+  final Function(Sweet, bool) onFavoriteChanged;
 
   const FavoritePage({
     super.key,
-    required this.favoriteGears,
+    required this.favoriteSweets,
     required this.onFavoriteChanged,
   });
 
@@ -26,7 +26,7 @@ class _FavoritePageState extends State<FavoritePage> {
         ),
         centerTitle: true,
       ),
-      body: widget.favoriteGears.isEmpty
+      body: widget.favoriteSweets.isEmpty
           ? Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -47,7 +47,7 @@ class _FavoritePageState extends State<FavoritePage> {
           : Padding(
         padding: const EdgeInsets.all(12.0),
         child: GridView.builder(
-          itemCount: widget.favoriteGears.length,
+          itemCount: widget.favoriteSweets.length,
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
             crossAxisSpacing: 12.0,
@@ -55,7 +55,7 @@ class _FavoritePageState extends State<FavoritePage> {
             childAspectRatio: 2 / 3,
           ),
           itemBuilder: (context, index) {
-            final gear = widget.favoriteGears.elementAt(index);
+            final sweet = widget.favoriteSweets.elementAt(index);
             return GestureDetector(
               onTap: () {
               },
@@ -74,7 +74,7 @@ class _FavoritePageState extends State<FavoritePage> {
                             borderRadius: const BorderRadius.vertical(
                                 top: Radius.circular(15)),
                             child: Image.network(
-                              gear.imageUrl,
+                              sweet.imageUrl,
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -85,7 +85,7 @@ class _FavoritePageState extends State<FavoritePage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                gear.name,
+                                sweet.name,
                                 style: const TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
@@ -94,7 +94,7 @@ class _FavoritePageState extends State<FavoritePage> {
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                '${gear.price} ₽',
+                                '${sweet.price} ₽',
                                 style: TextStyle(
                                   fontSize: 16,
                                   color: Colors.pinkAccent.shade400,
@@ -113,7 +113,7 @@ class _FavoritePageState extends State<FavoritePage> {
                         icon: const Icon(Icons.favorite),
                         color: Colors.red,
                         onPressed: () {
-                          widget.onFavoriteChanged(gear, false);
+                          widget.onFavoriteChanged(sweet, false);
                           setState(() {});
                         },
                       ),

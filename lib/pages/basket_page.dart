@@ -5,9 +5,9 @@ import '../models/note.dart';
 import '../api/api.dart';
 
 class BasketPage extends StatefulWidget {
-  final Set<Gear> basketItems;
-  final Function(Gear) onRemoveFromBasket;
-  final Function(List<Gear>) onPurchaseComplete;
+  final Set<Sweet> basketItems;
+  final Function(Sweet) onRemoveFromBasket;
+  final Function(List<Sweet>) onPurchaseComplete;
 
   const BasketPage({
     Key? key,
@@ -41,18 +41,18 @@ class _BasketPageState extends State<BasketPage> {
         0, (sum, item) => sum + (item.price * item.quantity));
   }
 
-  void _increaseQuantity(Gear gear) {
+  void _increaseQuantity(Sweet sweet) {
     setState(() {
-      gear.quantity++;
+      sweet.quantity++;
     });
   }
 
-  void _decreaseQuantity(Gear gear) {
+  void _decreaseQuantity(Sweet sweet) {
     setState(() {
-      if (gear.quantity > 1) {
-        gear.quantity--;
+      if (sweet.quantity > 1) {
+        sweet.quantity--;
       } else {
-        widget.onRemoveFromBasket(gear);
+        widget.onRemoveFromBasket(sweet);
       }
     });
   }
@@ -104,27 +104,27 @@ class _BasketPageState extends State<BasketPage> {
             child: ListView.builder(
               itemCount: widget.basketItems.length,
               itemBuilder: (context, index) {
-                final gear = widget.basketItems.elementAt(index);
+                final sweet = widget.basketItems.elementAt(index);
                 return ListTile(
                   leading: Image.network(
-                    gear.imageUrl,
+                    sweet.imageUrl,
                     width: 50,
                     height: 50,
                   ),
-                  title: Text(gear.name),
+                  title: Text(sweet.name),
                   subtitle: Text(
-                      '${gear.price} рублей x ${gear.quantity}'),
+                      '${sweet.price} рублей x ${sweet.quantity}'),
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       IconButton(
                         icon: const Icon(Icons.remove_circle_outline),
-                        onPressed: () => _decreaseQuantity(gear),
+                        onPressed: () => _decreaseQuantity(sweet),
                       ),
-                      Text(gear.quantity.toString()),
+                      Text(sweet.quantity.toString()),
                       IconButton(
                         icon: const Icon(Icons.add_circle_outline),
-                        onPressed: () => _increaseQuantity(gear),
+                        onPressed: () => _increaseQuantity(sweet),
                       ),
                     ],
                   ),

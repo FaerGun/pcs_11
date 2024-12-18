@@ -4,9 +4,9 @@ import '../models/note.dart';
 import '../pages/note_page.dart';
 
 class Item extends StatelessWidget {
-  final Gear gear;
+  final Sweet sweet;
 
-  const Item({super.key, required this.gear});
+  const Item({super.key, required this.sweet});
 
   @override
   Widget build(BuildContext context) {
@@ -20,14 +20,14 @@ class Item extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Image.network(
-              gear.imageUrl,
+              sweet.imageUrl,
               width: 100,
               height: 100,
               fit: BoxFit.cover,
             ),
             const SizedBox(height: 10),
             Text(
-              gear.name,
+              sweet.name,
               style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
@@ -36,13 +36,13 @@ class Item extends StatelessWidget {
             ),
             const SizedBox(height: 5),
             Text(
-              gear.description,
+              sweet.description,
               style: const TextStyle(fontSize: 14),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 5),
             Text(
-              'Цена: ${gear.price} рублей',
+              'Цена: ${sweet.price} рублей',
               style: const TextStyle(fontSize: 14),
               textAlign: TextAlign.center,
             ),
