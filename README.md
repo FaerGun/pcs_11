@@ -11,9 +11,11 @@
 ![image](https://github.com/user-attachments/assets/1556b21c-20da-4e52-9f1a-ec339a3bea3c)
 
 профиль
-![img_1.png](img_1.png)
+![image](https://github.com/user-attachments/assets/1eeeb71d-a5f7-4023-8a40-d054c9760dce)
+
 заказы
 ![image](https://github.com/user-attachments/assets/b269dcd7-1946-4c20-86c0-3de8bfed2411)
 
 редактирование
-![img_3.png](img_3.png)
+![image](https://github.com/user-attachments/assets/9c3a430f-fa2c-4dfb-9afd-d2bb2d765496)
+
