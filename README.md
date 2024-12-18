@@ -19,3 +19,9 @@
 редактирование
 ![image](https://github.com/user-attachments/assets/9c3a430f-fa2c-4dfb-9afd-d2bb2d765496)
 
+# Практика 13
+Шведов Павел
+Профиль
+![img_4.png](img_4.png)
+авторизация на firebase данные
+![img_5.png](img_5.png)
