@@ -5,11 +5,13 @@ import '../models/note.dart';
 class FavoritePage extends StatefulWidget {
   final Set<Sweet> favoriteSweets;
   final Function(Sweet, bool) onFavoriteChanged;
+  final Function(Sweet) onAddToBasket; // Добавлена функция для добавления в корзину
 
   const FavoritePage({
     super.key,
     required this.favoriteSweets,
     required this.onFavoriteChanged,
+    required this.onAddToBasket, // Добавлен новый параметр
   });
 
   @override
@@ -57,8 +59,7 @@ class _FavoritePageState extends State<FavoritePage> {
           itemBuilder: (context, index) {
             final sweet = widget.favoriteSweets.elementAt(index);
             return GestureDetector(
-              onTap: () {
-              },
+              onTap: () {},
               child: Card(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15),
@@ -115,6 +116,24 @@ class _FavoritePageState extends State<FavoritePage> {
                         onPressed: () {
                           widget.onFavoriteChanged(sweet, false);
                           setState(() {});
+                        },
+                      ),
+                    ),
+                    Positioned(
+                      bottom: 8,
+                      right: 8,
+                      child: IconButton(
+                        icon: const Icon(Icons.shopping_cart),
+                        color: Colors.blue,
+                        onPressed: () {
+                          widget.onAddToBasket(sweet); // Добавление в корзину
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content:
+                              Text('${sweet.name} добавлен в корзину'),
+                              duration: const Duration(seconds: 2),
+                            ),
+                          );
                         },
                       ),
                     ),

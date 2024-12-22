@@ -82,11 +82,12 @@ class _MyHomePageState extends State<MyHomePage> {
       HomePage(
         favoriteSweets: _favoriteSweets,
         onFavoriteChanged: _onFavoriteChanged,
-        onAddToBasket: _addToBasket,
+        onAddToBasket: _addToBasket, // Передача функции для добавления в корзину
       ),
       FavoritePage(
         favoriteSweets: _favoriteSweets,
         onFavoriteChanged: _onFavoriteChanged,
+        onAddToBasket: _addToBasket, // Передача функции для добавления в корзину
       ),
       BasketPage(
         basketItems: _basketItems,

@@ -19,7 +19,9 @@ class Order {
       products: (json['products'] as List)
           .map((item) => OrderItem.fromJson(item))
           .toList(),
-      totalPrice: json['total_price'],
+      totalPrice: json['total_price'] is String
+          ? int.parse(json['total_price'])
+          : json['total_price'],
       date: (json['date'] is Timestamp)
           ? (json['date'] as Timestamp).toDate()
           : DateTime.parse(json['date']),
@@ -44,10 +46,14 @@ class OrderItem {
 
   factory OrderItem.fromJson(Map<String, dynamic> json) {
     return OrderItem(
-      productId: json['product_id'],
+      productId: json['product_id'] is String
+          ? int.parse(json['product_id'])
+          : json['product_id'],
       name: json['name'],
-      price: json['price'],
-      quantity: json['quantity'],
+      price: json['price'] is String ? int.parse(json['price']) : json['price'],
+      quantity: json['quantity'] is String
+          ? int.parse(json['quantity'])
+          : json['quantity'],
       imageUrl: json['image_url'],
     );
   }
