@@ -21,7 +21,7 @@ class ApiService {
   // Создание продукта
   Future<void> createProduct(Sweet sweet) async {
     try {
-      await _firestore.collection('products').doc(sweet.id.toString()).set(sweet.toJson());
+      await _firestore.collection('products').doc(sweet.id).set(sweet.toJson());
     } catch (e) {
       throw Exception('Не удалось создать продукт: $e');
     }
@@ -41,9 +41,9 @@ class ApiService {
   }
 
   // Удаление продукта
-  Future<void> deleteProduct(int id) async {
+  Future<void> deleteProduct(String id) async {
     try {
-      await _firestore.collection('products').doc(id.toString()).delete();
+      await _firestore.collection('products').doc(id).delete();
     } catch (e) {
       throw Exception('Не удалось удалить продукт: $e');
     }

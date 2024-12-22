@@ -54,7 +54,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _addNewSweet() async {
     final newSweet = Sweet(
-      id: DateTime.now().millisecondsSinceEpoch,
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
       name: _nameController.text,
       description: _descriptionController.text,
       imageUrl: _imageUrlController.text,
@@ -262,24 +262,24 @@ class _HomePageState extends State<HomePage> {
                 final sweet = filteredSweets[index];
                 final isFavorite = widget.favoriteSweets.contains(sweet);
 
-                return GestureDetector(
-                  onTap: () async {
-                    await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ProductDetailPage(
-                          sweet: sweet,
-                          onDelete: () async {
-                            await apiService.deleteProduct(sweet.id);
-                            await fetchProducts();
-                          },
-                        ),
+                return Item(
+                  sweet: sweet,
+                  isFavorite: isFavorite,
+                  onAddToBasket: () {
+                    widget.onAddToBasket(sweet);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('${sweet.name} добавлен в корзину')),
+                    );
+                  },
+                  onToggleFavorite: () {
+                    _toggleFavorite(sweet);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                            '${sweet.name} ${isFavorite ? "удален из избранного" : "добавлен в избранное"}'),
                       ),
                     );
                   },
-                  child: Item(
-                    sweet: sweet,
-                  ),
                 );
               },
             ),

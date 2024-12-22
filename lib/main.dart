@@ -9,7 +9,6 @@ import 'pages/login_page.dart';
 import 'pages/profile.dart';
 import 'pages/chat_list_page.dart';
 import 'firebase_options.dart';
-import 'api/demo_data.dart'; // Импорт для демо-данных
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,9 +17,6 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-
-  // Вызов функции добавления демо-данных (один раз)
-  await addDemoData();
 
   runApp(const MyApp());
 }
@@ -32,7 +28,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Все для улова от рыболова',
+      title: 'Rybolov_shop',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
         useMaterial3: true,
