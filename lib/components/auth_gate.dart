@@ -1,4 +1,4 @@
-import 'package:pcs_11/pages/profile.dart';
+import 'package:Rybalov_shop/pages/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../models/note.dart';

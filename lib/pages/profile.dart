@@ -1,4 +1,4 @@
-import 'package:pcs_11/components/auth_service.dart';
+import 'package:Rybalov_shop/components/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'chat_list_page.dart';
 import 'edit_profile_page.dart';
