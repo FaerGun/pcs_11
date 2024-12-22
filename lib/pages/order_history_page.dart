@@ -64,31 +64,43 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Заказ №${order.id} от ${order.date}',
+                          'Заказ №${order.id} от ${_formatDate(order.date)}',
                           style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        const SizedBox(height: 10),
+                        const Divider(),
                         Column(
                           children: order.products.map((product) {
-                            return Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text('${product.name} x ${product.quantity}'),
-                                Text('${product.price * product.quantity} ₽'),
-                              ],
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 4),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    '${product.name} x ${product.quantity}',
+                                    style: const TextStyle(fontSize: 14),
+                                  ),
+                                  Text(
+                                    '${(product.price * product.quantity).toStringAsFixed(2)} ₽',
+                                    style: const TextStyle(fontSize: 14),
+                                  ),
+                                ],
+                              ),
                             );
                           }).toList(),
                         ),
                         const SizedBox(height: 10),
-                        Text(
-                          'Итог: ${order.totalPrice} ₽',
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.green,
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: Text(
+                            'Итог: ${order.totalPrice.toStringAsFixed(2)} ₽',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.green,
+                            ),
                           ),
                         ),
                       ],
@@ -101,5 +113,10 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
         },
       ),
     );
+  }
+
+  /// Метод для форматирования даты
+  String _formatDate(DateTime date) {
+    return '${date.day}.${date.month}.${date.year}';
   }
 }

@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'chat_page.dart';
+import 'chat_page.dart'; // Страница чата
 
-class ChatListPage extends StatelessWidget {
+class SellerChatsPage extends StatelessWidget {
   final String sellerUid;
 
-  const ChatListPage({Key? key, required this.sellerUid}) : super(key: key);
+  const SellerChatsPage({super.key, required this.sellerUid});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Список чатов'),
+        title: const Text('Чаты покупателей'),
+        centerTitle: true,
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
@@ -24,57 +25,37 @@ class ChatListPage extends StatelessWidget {
           }
 
           if (snapshot.hasError) {
-            return Center(
-              child: Text(
-                'Ошибка: ${snapshot.error}',
-                style: const TextStyle(fontSize: 16, color: Colors.red),
-              ),
-            );
+            return Center(child: Text('Ошибка: ${snapshot.error}'));
           }
 
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return const Center(
-              child: Text(
-                'Чаты отсутствуют',
-                style: TextStyle(fontSize: 18, color: Colors.grey),
-              ),
-            );
+            return const Center(child: Text('Нет сообщений'));
           }
 
-          // Извлечение уникальных идентификаторов покупателей
+          // Получаем уникальных покупателей, которые отправляли сообщения
           final buyers = snapshot.data!.docs
-              .where((doc) => (doc.data() as Map<String, dynamic>).containsKey('sender'))
-              .map((doc) => (doc.data() as Map<String, dynamic>)['sender'] as String)
+              .map((doc) => doc['senderId'] as String)
               .toSet()
               .toList();
 
           return ListView.builder(
             itemCount: buyers.length,
             itemBuilder: (context, index) {
-              final buyerUid = buyers[index];
+              final buyerId = buyers[index];
 
               return FutureBuilder<DocumentSnapshot>(
                 future: FirebaseFirestore.instance
                     .collection('users')
-                    .doc(buyerUid)
+                    .doc(buyerId)
                     .get(),
                 builder: (context, userSnapshot) {
                   if (userSnapshot.connectionState == ConnectionState.waiting) {
-                    return const ListTile(
-                      title: Text('Загрузка...'),
-                    );
+                    return const ListTile(title: Text('Загрузка...'));
                   }
 
-                  if (userSnapshot.hasError) {
+                  if (!userSnapshot.hasData || !userSnapshot.data!.exists) {
                     return ListTile(
-                      title: const Text('Ошибка загрузки пользователя'),
-                      subtitle: Text(buyerUid),
-                    );
-                  }
-
-                  if (!userSnapshot.hasData || userSnapshot.data?.data() == null) {
-                    return ListTile(
-                      title: Text('Пользователь: $buyerUid (не найден)'),
+                      title: Text('Пользователь: $buyerId'),
                       trailing: const Icon(Icons.chat),
                       onTap: () {
                         Navigator.push(
@@ -82,7 +63,7 @@ class ChatListPage extends StatelessWidget {
                           MaterialPageRoute(
                             builder: (context) => ChatPage(
                               sellerUid: sellerUid,
-                              buyerUid: buyerUid,
+                              buyerUid: buyerId,
                             ),
                           ),
                         );
@@ -91,19 +72,13 @@ class ChatListPage extends StatelessWidget {
                   }
 
                   final userData = userSnapshot.data!.data() as Map<String, dynamic>;
-                  final displayName = userData['name'] ?? 'Пользователь: $buyerUid';
+                  final buyerName = userData['name'] ?? 'Пользователь: $buyerId';
 
                   return ListTile(
+                    title: Text(buyerName),
                     leading: CircleAvatar(
-                      backgroundImage: userData['avatarUrl'] != null
-                          ? NetworkImage(userData['avatarUrl'])
-                          : null,
-                      child: userData['avatarUrl'] == null
-                          ? const Icon(Icons.person)
-                          : null,
+                      child: Text(buyerName[0]), // Инициалы пользователя
                     ),
-                    title: Text(displayName),
-                    subtitle: Text('UID: $buyerUid'),
                     trailing: const Icon(Icons.chat),
                     onTap: () {
                       Navigator.push(
@@ -111,7 +86,7 @@ class ChatListPage extends StatelessWidget {
                         MaterialPageRoute(
                           builder: (context) => ChatPage(
                             sellerUid: sellerUid,
-                            buyerUid: buyerUid,
+                            buyerUid: buyerId,
                           ),
                         ),
                       );

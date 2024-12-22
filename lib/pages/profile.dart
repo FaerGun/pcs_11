@@ -2,11 +2,13 @@ import 'package:pcs_11/components/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'chat_list_page.dart';
 import 'edit_profile_page.dart';
-import 'orderhistorypage.dart';
+import 'order_history_page.dart';
 import 'chat_page.dart';
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
+  final Function onSignOut;
+
+  const ProfilePage({super.key, required this.onSignOut});
 
   @override
   _ProfilePageState createState() => _ProfilePageState();
@@ -16,15 +18,9 @@ class _ProfilePageState extends State<ProfilePage> {
   String _fullName = 'John Lenon';
   String _phone = '+7 985 456 7890';
   String _avatarUrl = 'https://via.placeholder.com/150';
+  String _role = 'Покупатель';
 
   final authService = AuthService();
-
-  void logout() async {
-    await authService.signOut();
-    if (mounted) {
-      Navigator.of(context).pushReplacementNamed('/login');
-    }
-  }
 
   void _editProfile(String fullName, String phone, String avatarUrl) {
     setState(() {
@@ -54,6 +50,13 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     final currentEmail = authService.getCurrentUserEmail();
     final currentUserUid = authService.getCurrentUserUid();
+
+    // Определение роли
+    if (currentUserUid == "qSVrgQjZaXfxRTRu5ksjmtMX6oH2") {
+      _role = "Продавец";
+    } else {
+      _role = "Покупатель";
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -109,6 +112,15 @@ class _ProfilePageState extends State<ProfilePage> {
                           _phone,
                           style: const TextStyle(fontSize: 18, color: Colors.grey),
                         ),
+                        const SizedBox(height: 10),
+                        Text(
+                          'Роль: $_role',
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blueAccent,
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -126,33 +138,37 @@ class _ProfilePageState extends State<ProfilePage> {
                 },
                 child: const Text('История заказов'),
               ),
-              if (currentUserUid == "qSVrgQjZaXfxRTRu5ksjmtMX6oH2")
-                ElevatedButton(
-                  onPressed: () {
+              ElevatedButton(
+                onPressed: () {
+                  if (_role == "Продавец") {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const ChatListPage(sellerUid: "qSVrgQjZaXfxRTRu5ksjmtMX6oH2"),
+                        builder: (context) => ChatListPage(
+                          sellerUid: currentUserUid!,
+                        ),
                       ),
                     );
-                  },
-                  child: const Text('Мои чаты'),
-                )
-              else
-                ElevatedButton(
-                  onPressed: () {
+                  } else {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const ChatPage(sellerUid: "qSVrgQjZaXfxRTRu5ksjmtMX6oH2"),
+                        builder: (context) => ChatListPage(
+                          sellerUid: "qSVrgQjZaXfxRTRu5ksjmtMX6oH2",
+                        ),
                       ),
                     );
-                  },
-                  child: const Text('Чат с продавцом'),
+                  }
+                },
+                child: Text(
+                  _role == "Продавец" ? 'Чаты с покупателями' : 'Чат с продавцом',
                 ),
+              ),
               const SizedBox(height: 30),
               ElevatedButton(
-                onPressed: logout,
+                onPressed: () {
+                  widget.onSignOut();
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.red,
                 ),

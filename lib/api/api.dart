@@ -1,15 +1,16 @@
-import 'package:dio/dio.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import '../models/order.dart' as customOrder;
 import '../models/note.dart';
-import '../models/order.dart';
 
 class ApiService {
-  final Dio _dio = Dio(BaseOptions(baseUrl: 'http://localhost:8080'));
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+  // Получение списка продуктов
   Future<List<Sweet>> getProducts() async {
     try {
-      final response = await _dio.get('/products');
-      List<Sweet> products = (response.data as List)
-          .map((json) => Sweet.fromJson(json))
+      final querySnapshot = await _firestore.collection('products').get();
+      List<Sweet> products = querySnapshot.docs
+          .map((doc) => Sweet.fromJson(doc.data() as Map<String, dynamic>))
           .toList();
       return products;
     } catch (e) {
@@ -17,50 +18,57 @@ class ApiService {
     }
   }
 
+  // Создание продукта
   Future<void> createProduct(Sweet sweet) async {
     try {
-      await _dio.post('/products', data: sweet.toJson());
+      await _firestore.collection('products').doc(sweet.id.toString()).set(sweet.toJson());
     } catch (e) {
       throw Exception('Не удалось создать продукт: $e');
     }
   }
 
+  // Получение продукта по ID
   Future<Sweet> getProductByID(int id) async {
     try {
-      final response = await _dio.get('/products/$id');
-      return Sweet.fromJson(response.data);
+      final docSnapshot = await _firestore.collection('products').doc(id.toString()).get();
+      if (!docSnapshot.exists) {
+        throw Exception('Продукт не найден');
+      }
+      return Sweet.fromJson(docSnapshot.data() as Map<String, dynamic>);
     } catch (e) {
       throw Exception('Продукт не найден: $e');
     }
   }
 
+  // Удаление продукта
   Future<void> deleteProduct(int id) async {
     try {
-      await _dio.delete('/products/$id');
+      await _firestore.collection('products').doc(id.toString()).delete();
     } catch (e) {
       throw Exception('Не удалось удалить продукт: $e');
     }
   }
 
-
-  Future<List<Order>> getOrderHistory() async {
+  // Получение истории заказов
+  Future<List<customOrder.Order>> getOrderHistory() async {
     try {
-      final response = await _dio.get('/orders');
-      List<Order> orders = (response.data as List)
-          .map((json) => Order.fromJson(json))
-          .toList();
+      final querySnapshot = await _firestore.collection('orders').get();
+      List<customOrder.Order> orders = querySnapshot.docs.map((doc) {
+        final data = doc.data() as Map<String, dynamic>;
+        return customOrder.Order.fromJson(doc.id, data);
+      }).toList();
       return orders;
     } catch (e) {
       throw Exception('Не удалось загрузить историю заказов: $e');
     }
   }
 
+  // Создание заказа
   Future<void> createOrder(List<Sweet> orderItems, int totalCost) async {
     try {
       final data = {
         "products": orderItems
-            .map((sweet) =>
-        {
+            .map((sweet) => {
           "product_id": sweet.id,
           "name": sweet.name,
           "price": sweet.price,
@@ -69,9 +77,10 @@ class ApiService {
         })
             .toList(),
         "total_price": totalCost,
+        "date": DateTime.now().toIso8601String(),
       };
 
-      await _dio.post('/orders', data: data);
+      await _firestore.collection('orders').add(data);
     } catch (e) {
       throw Exception('Не удалось отправить заказ: $e');
     }

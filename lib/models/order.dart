@@ -1,8 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Order {
-  final int id;
+  final String id; // Если id документа, то тип String
   final List<OrderItem> products;
   final int totalPrice;
-  final String date;
+  final DateTime date;
 
   Order({
     required this.id,
@@ -11,14 +13,16 @@ class Order {
     required this.date,
   });
 
-  factory Order.fromJson(Map<String, dynamic> json) {
+  factory Order.fromJson(String id, Map<String, dynamic> json) {
     return Order(
-      id: json['id'],
+      id: id, // Уникальный идентификатор документа Firestore
       products: (json['products'] as List)
           .map((item) => OrderItem.fromJson(item))
           .toList(),
       totalPrice: json['total_price'],
-      date: json['date'],
+      date: (json['date'] is Timestamp)
+          ? (json['date'] as Timestamp).toDate()
+          : DateTime.parse(json['date']),
     );
   }
 }

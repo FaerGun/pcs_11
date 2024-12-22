@@ -1,20 +1,23 @@
-import 'package:pcs_11/pages/basket_page.dart';
-import 'package:pcs_11/pages/favourite.dart';
-import 'package:pcs_11/pages/login_page.dart';
-import 'package:pcs_11/pages/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'models/note.dart';
 import 'pages/home_page.dart';
-import 'firebase_options.dart'; // Import your generated Firebase configuration
+import 'pages/favourite.dart';
+import 'pages/basket_page.dart';
+import 'pages/login_page.dart';
+import 'pages/profile.dart';
+import 'pages/chat_list_page.dart';
+import 'firebase_options.dart';
 
-Future<void> main() async {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // Initialize Firebase with platform-specific options
+
+  // Инициализация Firebase
   await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform, // Using the generated Firebase options
+    options: DefaultFirebaseOptions.currentPlatform,
   );
+
   runApp(const MyApp());
 }
 
@@ -25,12 +28,33 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Вкусняшки',
+      title: 'Все для улова от рыболова',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
         useMaterial3: true,
       ),
-      home: const MyHomePage(),
+      home: const AuthGate(),
+    );
+  }
+}
+
+class AuthGate extends StatelessWidget {
+  const AuthGate({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<User?>(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (snapshot.hasData) {
+          return const MyHomePage(); // Пользователь авторизован
+        } else {
+          return const LoginPage(); // Пользователь не авторизован
+        }
+      },
     );
   }
 }
@@ -44,89 +68,69 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
-  Set<Sweet> favoriteSweets = <Sweet>{};
-  Set<Sweet> basketItems = <Sweet>{};
-  bool _isLoggedIn = false;
-  final List<Sweet> orderHistory = [];
+  final Set<Sweet> _favoriteSweets = {};
+  final Set<Sweet> _basketItems = {};
 
-  static const List<Widget> _widgetTitles = [
-    Text('Главная'),
-    Text('Избранное'),
-    Text('Корзина'),
-    Text('Профиль'),
-  ];
-
-  late List<Widget> _widgetOptions;
+  final List<Widget> _pages = [];
 
   @override
   void initState() {
     super.initState();
-    _checkAuthStatus();
+    final currentUserUid = FirebaseAuth.instance.currentUser?.uid;
 
-    _updateWidgetOptions();
-
-    FirebaseAuth.instance.authStateChanges().listen((user) {
-      setState(() {
-        _isLoggedIn = user != null;
-        _updateWidgetOptions();
-      });
-    });
-  }
-
-  void _checkAuthStatus() {
-    final user = FirebaseAuth.instance.currentUser;
-    setState(() {
-      _isLoggedIn = user != null;
-    });
-  }
-
-  void _updateWidgetOptions() {
-    _widgetOptions = <Widget>[
+    _pages.addAll([
       HomePage(
-        favoriteSweets: favoriteSweets,
+        favoriteSweets: _favoriteSweets,
         onFavoriteChanged: _onFavoriteChanged,
         onAddToBasket: _addToBasket,
       ),
       FavoritePage(
-        favoriteSweets: favoriteSweets,
+        favoriteSweets: _favoriteSweets,
         onFavoriteChanged: _onFavoriteChanged,
       ),
       BasketPage(
-        basketItems: basketItems,
+        basketItems: _basketItems,
         onRemoveFromBasket: _removeFromBasket,
-        onPurchaseComplete: _addOrderToHistory,
+        onPurchaseComplete: _clearBasket,
       ),
-      _isLoggedIn
-          ? ProfilePage()
-          : const LoginPage(),
-    ];
+      ProfilePage(onSignOut: _signOut),
+      if (currentUserUid == "seller_specific_uid") // Проверьте UID продавца
+        ChatListPage(sellerUid: currentUserUid!),
+    ]);
   }
 
   void _onFavoriteChanged(Sweet sweet, bool isFavorite) {
     setState(() {
       if (isFavorite) {
-        favoriteSweets.add(sweet);
+        _favoriteSweets.add(sweet);
       } else {
-        favoriteSweets.remove(sweet);
+        _favoriteSweets.remove(sweet);
       }
     });
   }
 
   void _addToBasket(Sweet sweet) {
     setState(() {
-      basketItems.add(sweet);
-    });
-  }
-
-  void _addOrderToHistory(List<Sweet> purchasedItems) {
-    setState(() {
-      orderHistory.addAll(purchasedItems);
+      _basketItems.add(sweet);
     });
   }
 
   void _removeFromBasket(Sweet sweet) {
     setState(() {
-      basketItems.remove(sweet);
+      _basketItems.remove(sweet);
+    });
+  }
+
+  void _clearBasket(List<Sweet> purchasedItems) {
+    setState(() {
+      _basketItems.clear();
+    });
+  }
+
+  void _signOut() async {
+    await FirebaseAuth.instance.signOut();
+    setState(() {
+      _selectedIndex = 0;
     });
   }
 
@@ -138,31 +142,32 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final isSeller = FirebaseAuth.instance.currentUser?.uid == "seller_specific_uid";
+    final items = [
+      const BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Главная'),
+      const BottomNavigationBarItem(icon: Icon(Icons.favorite), label: 'Избранное'),
+      const BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), label: 'Корзина'),
+      const BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Профиль'),
+    ];
+    if (isSeller) {
+      items.add(const BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'Чаты'));
+    }
+
     return Scaffold(
-      body: _widgetOptions.elementAt(_selectedIndex),
+      appBar: AppBar(
+        title: Text([
+          'Главная',
+          'Избранное',
+          'Корзина',
+          'Профиль',
+          if (isSeller) 'Чаты'
+        ][_selectedIndex]),
+      ),
+      body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Главная',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
-            label: 'Избранное',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_cart),
-            label: 'Корзина',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Профиль',
-          ),
-        ],
+        items: items,
         currentIndex: _selectedIndex,
-        selectedItemColor: const Color.fromARGB(255, 7, 78, 41),
-        unselectedItemColor: const Color.fromARGB(255, 26, 137, 79),
-        backgroundColor: const Color.fromARGB(255, 126, 165, 99),
+        selectedItemColor: Colors.blueAccent,
         onTap: _onItemTapped,
       ),
     );

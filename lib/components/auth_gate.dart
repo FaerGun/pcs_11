@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../models/note.dart';
 import '../pages/login_page.dart';
+import '../components/auth_service.dart'; // Add this import for signOut functionality
 
 class AuthGate extends StatefulWidget {
   const AuthGate({super.key, required this.orderHistory});
@@ -13,6 +14,8 @@ class AuthGate extends StatefulWidget {
 }
 
 class _AuthGateState extends State<AuthGate> {
+  final authService = AuthService();  // Add this to handle sign out
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<User?>(
@@ -25,7 +28,11 @@ class _AuthGateState extends State<AuthGate> {
         }
 
         if (snapshot.hasData && snapshot.data != null) {
-          return const ProfilePage();
+          return ProfilePage(
+            onSignOut: () async {
+              await authService.signOut();  // Sign out logic
+            },
+          );
         } else {
           return const LoginPage();
         }
