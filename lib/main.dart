@@ -144,13 +144,66 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     final isSeller = FirebaseAuth.instance.currentUser?.uid == "seller_specific_uid";
     final items = [
-      const BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Главная'),
-      const BottomNavigationBarItem(icon: Icon(Icons.favorite), label: 'Избранное'),
-      const BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), label: 'Корзина'),
-      const BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Профиль'),
+      BottomNavigationBarItem(
+        icon: Container(
+          decoration: BoxDecoration(
+            color: Colors.blueAccent.withOpacity(0.2), // Фон для иконок
+            shape: BoxShape.circle,
+          ),
+          padding: const EdgeInsets.all(8),
+          child: const Icon(Icons.home, color: Colors.blueAccent),
+        ),
+        label: 'Главная',
+      ),
+      BottomNavigationBarItem(
+        icon: Container(
+          decoration: BoxDecoration(
+            color: Colors.redAccent.withOpacity(0.2),
+            shape: BoxShape.circle,
+          ),
+          padding: const EdgeInsets.all(8),
+          child: const Icon(Icons.favorite, color: Colors.redAccent),
+        ),
+        label: 'Избранное',
+      ),
+      BottomNavigationBarItem(
+        icon: Container(
+          decoration: BoxDecoration(
+            color: Colors.greenAccent.withOpacity(0.2),
+            shape: BoxShape.circle,
+          ),
+          padding: const EdgeInsets.all(8),
+          child: const Icon(Icons.shopping_cart, color: Colors.greenAccent),
+        ),
+        label: 'Корзина',
+      ),
+      BottomNavigationBarItem(
+        icon: Container(
+          decoration: BoxDecoration(
+            color: Colors.purpleAccent.withOpacity(0.2),
+            shape: BoxShape.circle,
+          ),
+          padding: const EdgeInsets.all(8),
+          child: const Icon(Icons.person, color: Colors.purpleAccent),
+        ),
+        label: 'Профиль',
+      ),
     ];
+
     if (isSeller) {
-      items.add(const BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'Чаты'));
+      items.add(
+        BottomNavigationBarItem(
+          icon: Container(
+            decoration: BoxDecoration(
+              color: Colors.orangeAccent.withOpacity(0.2),
+              shape: BoxShape.circle,
+            ),
+            padding: const EdgeInsets.all(8),
+            child: const Icon(Icons.chat, color: Colors.orangeAccent),
+          ),
+          label: 'Чаты',
+        ),
+      );
     }
 
     return Scaffold(
