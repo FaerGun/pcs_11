@@ -33,6 +33,8 @@
 # Практика 16
 шведов павел
 отправил на модерацию rustore
-![image](https://github.com/user-attachments/assets/9cbc71a9-203d-4067-adb6-27be57fb4892)
-![image](https://github.com/user-attachments/assets/5b4ef7c4-ddf5-4d39-8ab7-9862a358dced)
+![image](https://github.com/user-attachments/assets/70230ac8-875c-4631-b5a5-49402ab4e1fc)
+![image](https://github.com/user-attachments/assets/5a724e7c-5e45-491a-8a12-37d63523504b)
+
+
 
