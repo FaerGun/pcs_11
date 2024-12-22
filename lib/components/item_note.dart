@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-
 import '../models/note.dart';
-import '../pages/note_page.dart';
 
 class Item extends StatelessWidget {
   final Sweet sweet;
@@ -14,16 +12,36 @@ class Item extends StatelessWidget {
       elevation: 5,
       margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
       child: Container(
-        height: 1500,
         padding: const EdgeInsets.all(8.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Image.network(
-              sweet.imageUrl,
-              width: 100,
-              height: 100,
-              fit: BoxFit.cover,
+            Expanded(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8.0),
+                child: Image.network(
+                  sweet.imageUrl,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return const Center(
+                      child: Icon(
+                        Icons.broken_image,
+                        size: 50,
+                        color: Colors.grey,
+                      ),
+                    );
+                  },
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) {
+                      return child;
+                    }
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  },
+                ),
+              ),
             ),
             const SizedBox(height: 10),
             Text(
@@ -43,7 +61,10 @@ class Item extends StatelessWidget {
             const SizedBox(height: 5),
             Text(
               'Цена: ${sweet.price} рублей',
-              style: const TextStyle(fontSize: 14),
+              style: const TextStyle(
+                fontSize: 14,
+                color: Colors.green,
+              ),
               textAlign: TextAlign.center,
             ),
           ],
